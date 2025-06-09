@@ -38,9 +38,6 @@
     "typescript-eslint": "^8.32.1"
   },
   "pnpm": {
-    "overrides": {
-      "utils": "workspace:*"
-    },
     "onlyBuiltDependencies": [
       "nx"
     ]
