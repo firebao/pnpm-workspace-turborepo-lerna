@@ -38,7 +38,7 @@
   // "include": ["index.ts"]
   // @Example 例2：指定需要编译的文件列表，支持通配符
   // "include": ["src/**/*", "tests/**/*"]
-  "include": ["packages/**/*.ts"],
+  "include": ["packages/**/*.ts", "apps/**/*.ts"],
 
   /*---- references 引用:适合一个大项目由许多小项目构成的情况，用来设置需要引用的底层项目 ----*/
   // @Example 例1：引用底层项目

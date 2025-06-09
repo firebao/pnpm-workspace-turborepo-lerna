@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "commit": "commit",
     "prepare": "husky",
     "preinstall": "node ./scripts/preinstall.js",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/prompt-cli": "^19.8.1",
     "@eslint/js": "^9.26.0",
     "@types/node": "^22.15.17",
     "chalk": "^5.4.1",
@@ -29,6 +31,7 @@
     "husky": "^9.1.7",
     "lerna": "^8.2.2",
     "lint-staged": "^16.0.0",
+    "lodash": "^4.17.21",
     "prettier": "3.5.3",
     "turbo": "^2.5.3",
     "typescript": "^5.8.3",
@@ -45,9 +48,6 @@
   "engines": {
     "node": ">=20.12.2",
     "pnpm": ">=10.4.0"
-  },
-  "dependencies": {
-    "echarts": "^5.6.0"
   },
   "lint-staged": {
     "packages/**/src/**/*.{ts,tsx}": [
