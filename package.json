@@ -12,7 +12,9 @@
     "lerna-init": "lerna init",
     "lerna-create": "lerna create",
     "lerna-publish": "lerna publish",
-    "build": "turbo run build"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +28,7 @@
     "chalk": "^5.4.1",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.5",
+    "eslint-config-turbo": "^2.5.4",
     "eslint-plugin-prettier": "^5.4.0",
     "gradient-string": "^3.0.0",
     "husky": "^9.1.7",

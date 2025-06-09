@@ -19,7 +19,7 @@
   // "extends": "../tsconfig.base.json"
 
   /*---- exclude 从编译列表去除指定的文件 ----*/
-  "exclude": ["**/*.spec.ts", "assets/**/*", "node_modules", "package.json"],
+  "exclude": ["**/*.spec.ts", "assets/**/*", "node_modules", "package.json", "eslint.config.js"],
 
   /*---- files 指定需要编译的文件列表，不支持文件匹配，文件较多，建议使用include和exclude属性 ----*/
   // @Example 例1：指定需要编译的文件列表
