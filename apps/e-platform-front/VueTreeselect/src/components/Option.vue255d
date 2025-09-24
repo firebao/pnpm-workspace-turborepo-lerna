@@ -1,0 +1,260 @@
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
+import { UNCHECKED, INDETERMINATE, CHECKED } from '../constants';
+import { onLeftClick } from '../utils';
+import Tip from './Tip';
+import ArrowIcon from './icons/Arrow';
+var arrowPlaceholder, checkMark, minusMark;
+var Option = {
+  name: 'vue-treeselect--option',
+  inject: ['instance'],
+  props: {
+    node: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    shouldExpand: function shouldExpand() {
+      var instance = this.instance,
+          node = this.node;
+      return node.isBranch && instance.shouldExpand(node);
+    },
+    shouldShow: function shouldShow() {
+      var instance = this.instance,
+          node = this.node;
+      return instance.shouldShowOptionInMenu(node);
+    }
+  },
+  methods: {
+    renderOption: function renderOption() {
+      var h = this.$createElement;
+      var instance = this.instance,
+          node = this.node;
+      var optionClass = {
+        'vue-treeselect__option': true,
+        'vue-treeselect__option--disabled': node.isDisabled,
+        'vue-treeselect__option--selected': instance.isSelected(node),
+        'vue-treeselect__option--highlight': node.isHighlighted,
+        'vue-treeselect__option--matched': instance.localSearch.active && node.isMatched,
+        'vue-treeselect__option--hide': !this.shouldShow
+      };
+      return h("div", {
+        "class": optionClass,
+        on: {
+          "mouseenter": this.handleMouseEnterOption
+        },
+        attrs: {
+          "data-id": node.id
+        }
+      }, [this.renderArrow(), this.renderLabelContainer([this.renderCheckboxContainer([this.renderCheckbox()]), this.renderLabel()])]);
+    },
+    renderSubOptionsList: function renderSubOptionsList() {
+      var h = this.$createElement;
+      if (!this.shouldExpand) return null;
+      return h("div", {
+        "class": "vue-treeselect__list"
+      }, [this.renderSubOptions(), this.renderNoChildrenTip(), this.renderLoadingChildrenTip(), this.renderLoadingChildrenErrorTip()]);
+    },
+    renderArrow: function renderArrow() {
+      var h = this.$createElement;
+      var instance = this.instance,
+          node = this.node;
+      if (instance.shouldFlattenOptions && this.shouldShow) return null;
+
+      if (node.isBranch) {
+        var transitionProps = {
+          props: {
+            name: 'vue-treeselect__option-arrow--prepare',
+            appear: true
+          }
+        };
+        var arrowClass = {
+          'vue-treeselect__option-arrow': true,
+          'vue-treeselect__option-arrow--rotated': this.shouldExpand
+        };
+        return h("div", {
+          "class": "vue-treeselect__option-arrow-container",
+          on: {
+            "mousedown": this.handleMouseDownOnArrow
+          }
+        }, [h("transition", transitionProps, [h(ArrowIcon, {
+          "class": arrowClass
+        })])]);
+      }
+
+      if (instance.hasBranchNodes) {
+        if (!arrowPlaceholder) arrowPlaceholder = h("div", {
+          "class": "vue-treeselect__option-arrow-placeholder"
+        }, ["\xA0"]);
+        return arrowPlaceholder;
+      }
+
+      return null;
+    },
+    renderLabelContainer: function renderLabelContainer(children) {
+      var h = this.$createElement;
+      return h("div", {
+        "class": "vue-treeselect__label-container",
+        on: {
+          "mousedown": this.handleMouseDownOnLabelContainer
+        }
+      }, [children]);
+    },
+    renderCheckboxContainer: function renderCheckboxContainer(children) {
+      var h = this.$createElement;
+      var instance = this.instance,
+          node = this.node;
+      if (instance.single) return null;
+      if (instance.disableBranchNodes && node.isBranch) return null;
+      return h("div", {
+        "class": "vue-treeselect__checkbox-container"
+      }, [children]);
+    },
+    renderCheckbox: function renderCheckbox() {
+      var h = this.$createElement;
+      var instance = this.instance,
+          node = this.node;
+      var checkedState = instance.forest.checkedStateMap[node.id];
+      var checkboxClass = {
+        'vue-treeselect__checkbox': true,
+        'vue-treeselect__checkbox--checked': checkedState === CHECKED,
+        'vue-treeselect__checkbox--indeterminate': checkedState === INDETERMINATE,
+        'vue-treeselect__checkbox--unchecked': checkedState === UNCHECKED,
+        'vue-treeselect__checkbox--disabled': node.isDisabled
+      };
+      if (!checkMark) checkMark = h("span", {
+        "class": "vue-treeselect__check-mark"
+      });
+      if (!minusMark) minusMark = h("span", {
+        "class": "vue-treeselect__minus-mark"
+      });
+      return h("span", {
+        "class": checkboxClass
+      }, [checkMark, minusMark]);
+    },
+    renderLabel: function renderLabel() {
+      var h = this.$createElement;
+      var instance = this.instance,
+          node = this.node;
+      var shouldShowCount = node.isBranch && (instance.localSearch.active ? instance.showCountOnSearchComputed : instance.showCount);
+      var count = shouldShowCount ? instance.localSearch.active ? instance.localSearch.countMap[node.id][instance.showCountOf] : node.count[instance.showCountOf] : NaN;
+      var labelClassName = 'vue-treeselect__label';
+      var countClassName = 'vue-treeselect__count';
+      var customLabelRenderer = instance.$scopedSlots['option-label'];
+      if (customLabelRenderer) return customLabelRenderer({
+        node: node,
+        shouldShowCount: shouldShowCount,
+        count: count,
+        labelClassName: labelClassName,
+        countClassName: countClassName
+      });
+      return h("label", {
+        "class": labelClassName
+      }, [node.label, shouldShowCount && h("span", {
+        "class": countClassName
+      }, ["(", count, ")"])]);
+    },
+    renderSubOptions: function renderSubOptions() {
+      var h = this.$createElement;
+      var node = this.node;
+      if (!node.childrenStates.isLoaded) return null;
+      return node.children.map(function (childNode) {
+        return h(Option, {
+          attrs: {
+            node: childNode
+          },
+          key: childNode.id
+        });
+      });
+    },
+    renderNoChildrenTip: function renderNoChildrenTip() {
+      var h = this.$createElement;
+      var instance = this.instance,
+          node = this.node;
+      if (!node.childrenStates.isLoaded || node.children.length) return null;
+      return h(Tip, {
+        attrs: {
+          type: "no-children",
+          icon: "warning"
+        }
+      }, [instance.noChildrenText]);
+    },
+    renderLoadingChildrenTip: function renderLoadingChildrenTip() {
+      var h = this.$createElement;
+      var instance = this.instance,
+          node = this.node;
+      if (!node.childrenStates.isLoading) return null;
+      return h(Tip, {
+        attrs: {
+          type: "loading",
+          icon: "loader"
+        }
+      }, [instance.loadingText]);
+    },
+    renderLoadingChildrenErrorTip: function renderLoadingChildrenErrorTip() {
+      var h = this.$createElement;
+      var instance = this.instance,
+          node = this.node;
+      if (!node.childrenStates.loadingError) return null;
+      return h(Tip, {
+        attrs: {
+          type: "error",
+          icon: "error"
+        }
+      }, [node.childrenStates.loadingError, h("a", {
+        "class": "vue-treeselect__retry",
+        attrs: {
+          title: instance.retryTitle
+        },
+        on: {
+          "mousedown": this.handleMouseDownOnRetry
+        }
+      }, [instance.retryText])]);
+    },
+    handleMouseEnterOption: function handleMouseEnterOption(evt) {
+      var instance = this.instance,
+          node = this.node;
+      if (evt.target !== evt.currentTarget) return;
+      instance.setCurrentHighlightedOption(node, false);
+    },
+    handleMouseDownOnArrow: onLeftClick(function handleMouseDownOnOptionArrow() {
+      var instance = this.instance,
+          node = this.node;
+      instance.toggleExpanded(node);
+    }),
+    handleMouseDownOnLabelContainer: onLeftClick(function handleMouseDownOnLabelContainer() {
+      var instance = this.instance,
+          node = this.node;
+
+      if (node.isBranch && instance.disableBranchNodes) {
+        instance.toggleExpanded(node);
+      } else {
+        instance.select(node);
+      }
+    }),
+    handleMouseDownOnRetry: onLeftClick(function handleMouseDownOnRetry() {
+      var instance = this.instance,
+          node = this.node;
+      instance.loadChildrenOptions(node);
+    })
+  },
+  render: function render() {
+    var h = arguments[0];
+    var node = this.node;
+    var indentLevel = this.instance.shouldFlattenOptions ? 0 : node.level;
+
+    var listItemClass = _defineProperty({
+      'vue-treeselect__list-item': true
+    }, "vue-treeselect__indent-level-".concat(indentLevel), true);
+
+    var transitionProps = {
+      props: {
+        name: 'vue-treeselect__list--transition'
+      }
+    };
+    return h("div", {
+      "class": listItemClass
+    }, [this.renderOption(), node.isBranch && h("transition", transitionProps, [this.renderSubOptionsList()])]);
+  }
+};
+export default Option;

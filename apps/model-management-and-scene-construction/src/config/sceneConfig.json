@@ -1,0 +1,281 @@
+{
+	"model": [
+		{
+			"x": 0,
+			"y": 0,
+			"z": 0,
+			"url": "house2",
+			"groupName": "房间组",
+			"name": "房间"
+		},
+		{
+		
+			"x": 0,
+			"y": 0,
+			"z": 0,
+			"url": "cube",
+			"groupName": "房间组",
+			"name": "窄柜组",
+			"children": [
+				{
+					"num": 20,
+					"x": -10,
+					"y": 0.4,
+					"z": -3,
+					"offsetX": 0.60,
+					"name": "机柜组左后",
+					"groupName": "机柜组左后"
+				},
+				{
+					"num": 20,
+					"x": -10,
+					"y": 0.4,
+					"z": 0,
+					"offsetX": 0.60,
+					"name": "机柜组左中",
+					"groupName": "机柜组左中"
+				},
+				{
+					"num": 20,
+					"x": -10,
+					"y": 0.4,
+					"z": 3,
+					"offsetX": 0.60,
+					"name": "机柜组左前",
+					"groupName": "机柜组左前"
+				}
+			]
+		},
+		{
+			"x": 0.7,
+			"y": 1.55,
+			"z": 3,
+			"url": "pingmei1",
+			"groupName": "屏眉1",
+			"name": "屏眉1"
+		},
+		{
+			"x": 0.7,
+			"y": 1.55,
+			"z": 0,
+			"url": "pingmei2",
+			"groupName": "屏眉2",
+			"name": "屏眉2"
+		},
+		{
+			"x": 0.7,
+			"y": 1.55,
+			"z": -3,
+			"url": "pingmei3",
+			"groupName": "屏眉3",
+			"name": "屏眉3"
+		},
+		{
+			"x": 1.6,
+			"y": 1.55,
+			"z": -2,
+			"url": "pingmei4",
+			"groupName": "屏眉4",
+			"name": "屏眉4"
+		},
+		{
+			"x": 1.6,
+			"y": 1.55,
+			"z": 2,
+			"url": "pingmei5",
+			"groupName": "屏眉5",
+			"name": "屏眉5"
+		},
+		{
+			"x": 0,
+			"y": 0,
+			"z": 0,
+			"url": "widecabinet",
+			"groupName": "房间组",
+			"name": "宽柜组",
+			"children": [
+				{
+					"num": 9,
+					"x": 4,
+					"y": 0.4,
+					"z": 2,
+					"offsetX": 0.60,
+					"name": "机柜组右前",
+					"groupName": "机柜组右前"
+				},
+				{
+					"num": 12,
+					"x": 4,
+					"y": 0.4,
+					"z": -2,
+					"offsetX": 0.60,
+					"name": "机柜组右后",
+					"groupName": "机柜组右后"
+				}
+			]
+		},
+		{
+			"x": 0,
+			"y": 0,
+			"z": 0,
+			"url": "blue-cabinet",
+			"groupName": "房间组",
+			"name": "特殊机柜组",
+			"children": [
+				{
+					"num": 2,
+					"x": 9.3,
+					"y": 0.4,
+					"z": 2,
+					"offsetX": 0.90,
+					"name": "特殊机柜前组",
+					"groupName": "特殊机柜前"
+				},
+				{
+					"num": 1,
+					"x": 11.20,
+					"y": 0.4,
+					"z": -2,
+					"offsetX": 0.80,
+					"name": "特殊机柜后组",
+					"groupName": "特殊机柜后"
+				}
+			]
+		},
+		{
+			"x": 0,
+			"y": 0,
+			"z": 0,
+			"url": "camera",
+			"groupName": "房间组",
+			"name": "摄像头组",
+			"children": [
+				{
+					"num": 1,
+					"x": -11,
+					"y": 3,
+					"z": -2,
+					"offsetX": 0,
+					"name": "摄像头1",
+					"groupName": "摄像头1"
+				},
+				{
+					"num": 1,
+					"x": -11,
+					"y": 3,
+					"z": 2,
+					"offsetX": 0,
+					"name": "摄像头2",
+					"groupName": "摄像头2"
+				},
+				{
+					"num": 1,
+					"x": 3.5,
+					"y": 3,
+					"z": 0,
+					"offsetX": 0,
+					"name": "摄像头3",
+					"groupName": "摄像头3"
+				},
+				{
+					"num": 1,
+					"x": 12,
+					"y": 3,
+					"z": -4,
+					"offsetX": 0,
+					"name": "摄像头4",
+					"groupName": "摄像头4"
+				},
+				{
+					"num": 1,
+					"x": 12,
+					"y": 3,
+					"z": 4,
+					"offsetX": 0,
+					"name": "摄像头5",
+					"groupName": "摄像头5"
+				}
+			]
+		},
+		{
+			"x": 0,
+			"y": 0,
+			"z": 0,
+			"url": "sensor",
+			"groupName": "房间组",
+			"name": "烟雾传感器组",
+			"children": [
+				{
+					"num": 1,
+					"x": -6,
+					"y": 3,
+					"z": -3,
+					"offsetX": 0,
+					"name": "烟雾传感器1",
+					"groupName": "烟雾传感器1"
+				},
+				{
+					"num": 1,
+					"x": -6,
+					"y": 3,
+					"z": 0,
+					"offsetX": 0,
+					"name": "烟雾传感器2",
+					"groupName": "烟雾传感器2"
+				},
+				{
+					"num": 1,
+					"x": -6,
+					"y": 3,
+					"z": 3,
+					"offsetX": 0,
+					"name": "烟雾传感器3",
+					"groupName": "烟雾传感器3"
+				},
+				{
+					"num": 1,
+					"x": 6,
+					"y": 3,
+					"z": -3,
+					"offsetX": 0,
+					"name": "烟雾传感器4",
+					"groupName": "烟雾传感器4"
+				},
+				{
+					"num": 1,
+					"x": 6,
+					"y": 3,
+					"z": 0,
+					"offsetX": 0,
+					"name": "烟雾传感器5",
+					"groupName": "烟雾传感器5"
+				},
+				{
+					"num": 1,
+					"x": 6,
+					"y": 3,
+					"z": 3,
+					"offsetX": 0,
+					"name": "烟雾传感器6",
+					"groupName": "烟雾传感器6"
+				}
+			]
+		},
+		{
+			"x": -13,
+			"y": 0.4,
+			"z": -1,
+			"url": "left-air-conditioner",
+			"name": "左侧空调组",
+			"groupName": "房间组"
+		},
+		{
+			"x": 13,
+			"y": 0.4,
+			"z": -1,
+			"url": "right-air-conditioner",
+			"name": "右侧空调组",
+			"groupName": "房间组"
+		}
+	]
+}

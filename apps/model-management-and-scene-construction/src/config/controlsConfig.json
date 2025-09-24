@@ -1,0 +1,10 @@
+{
+    "defaultType": "pointerLockControl",
+    "orbitControls": {
+        "rotateSpeed": 2,
+        "zoomSpeed": 3.6,
+        "panSpeed": 1,
+        "minPolarAngle": 0,
+        "maxPolarAngle": 1.5707963267948966
+    }
+}

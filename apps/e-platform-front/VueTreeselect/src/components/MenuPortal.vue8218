@@ -1,0 +1,156 @@
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+import Vue from 'vue';
+import { watchSize, setupResizeAndScrollEventListeners, find } from '../utils';
+import Menu from './Menu';
+var PortalTarget = {
+  name: 'vue-treeselect--portal-target',
+  inject: ['instance'],
+  watch: {
+    'instance.menu.isOpen': function instanceMenuIsOpen(newValue) {
+      if (newValue) {
+        this.setupHandlers();
+      } else {
+        this.removeHandlers();
+      }
+    },
+    'instance.menu.placement': function instanceMenuPlacement() {
+      this.updateMenuContainerOffset();
+    }
+  },
+  created: function created() {
+    this.controlResizeAndScrollEventListeners = null;
+    this.controlSizeWatcher = null;
+  },
+  mounted: function mounted() {
+    var instance = this.instance;
+    if (instance.menu.isOpen) this.setupHandlers();
+  },
+  methods: {
+    setupHandlers: function setupHandlers() {
+      this.updateWidth();
+      this.updateMenuContainerOffset();
+      this.setupControlResizeAndScrollEventListeners();
+      this.setupControlSizeWatcher();
+    },
+    removeHandlers: function removeHandlers() {
+      this.removeControlResizeAndScrollEventListeners();
+      this.removeControlSizeWatcher();
+    },
+    setupControlResizeAndScrollEventListeners: function setupControlResizeAndScrollEventListeners() {
+      var instance = this.instance;
+      var $control = instance.getControl();
+      if (this.controlResizeAndScrollEventListeners) return;
+      this.controlResizeAndScrollEventListeners = {
+        remove: setupResizeAndScrollEventListeners($control, this.updateMenuContainerOffset)
+      };
+    },
+    setupControlSizeWatcher: function setupControlSizeWatcher() {
+      var _this = this;
+
+      var instance = this.instance;
+      var $control = instance.getControl();
+      if (this.controlSizeWatcher) return;
+      this.controlSizeWatcher = {
+        remove: watchSize($control, function () {
+          _this.updateWidth();
+
+          _this.updateMenuContainerOffset();
+        })
+      };
+    },
+    removeControlResizeAndScrollEventListeners: function removeControlResizeAndScrollEventListeners() {
+      if (!this.controlResizeAndScrollEventListeners) return;
+      this.controlResizeAndScrollEventListeners.remove();
+      this.controlResizeAndScrollEventListeners = null;
+    },
+    removeControlSizeWatcher: function removeControlSizeWatcher() {
+      if (!this.controlSizeWatcher) return;
+      this.controlSizeWatcher.remove();
+      this.controlSizeWatcher = null;
+    },
+    updateWidth: function updateWidth() {
+      var instance = this.instance;
+      var $portalTarget = this.$el;
+      var $control = instance.getControl();
+      var controlRect = $control.getBoundingClientRect();
+      $portalTarget.style.width = controlRect.width + 'px';
+    },
+    updateMenuContainerOffset: function updateMenuContainerOffset() {
+      var instance = this.instance;
+      var $control = instance.getControl();
+      var $portalTarget = this.$el;
+      var controlRect = $control.getBoundingClientRect();
+      var portalTargetRect = $portalTarget.getBoundingClientRect();
+      var offsetY = instance.menu.placement === 'bottom' ? controlRect.height : 0;
+      var left = Math.round(controlRect.left - portalTargetRect.left) + 'px';
+      var top = Math.round(controlRect.top - portalTargetRect.top + offsetY) + 'px';
+      var menuContainerStyle = this.$refs.menu.$refs['menu-container'].style;
+      var transformVariations = ['transform', 'webkitTransform', 'MozTransform', 'msTransform'];
+      var transform = find(transformVariations, function (t) {
+        return t in document.body.style;
+      });
+      menuContainerStyle[transform] = "translate(".concat(left, ", ").concat(top, ")");
+    }
+  },
+  render: function render() {
+    var h = arguments[0];
+    var instance = this.instance;
+    var portalTargetClass = ['vue-treeselect__portal-target', instance.wrapperClass];
+    var portalTargetStyle = {
+      zIndex: instance.zIndex
+    };
+    return h("div", {
+      "class": portalTargetClass,
+      style: portalTargetStyle,
+      attrs: {
+        "data-instance-id": instance.getInstanceId()
+      }
+    }, [h(Menu, {
+      ref: "menu"
+    })]);
+  },
+  destroyed: function destroyed() {
+    this.removeHandlers();
+  }
+};
+var placeholder;
+export default {
+  name: 'vue-treeselect--menu-portal',
+  created: function created() {
+    this.portalTarget = null;
+  },
+  mounted: function mounted() {
+    this.setup();
+  },
+  destroyed: function destroyed() {
+    this.teardown();
+  },
+  methods: {
+    setup: function setup() {
+      var el = document.createElement('div');
+      document.body.appendChild(el);
+      this.portalTarget = new Vue(_objectSpread({
+        el: el,
+        parent: this
+      }, PortalTarget));
+    },
+    teardown: function teardown() {
+      document.body.removeChild(this.portalTarget.$el);
+      this.portalTarget.$el.innerHTML = '';
+      this.portalTarget.$destroy();
+      this.portalTarget = null;
+    }
+  },
+  render: function render() {
+    var h = arguments[0];
+    if (!placeholder) placeholder = h("div", {
+      "class": "vue-treeselect__menu-placeholder"
+    });
+    return placeholder;
+  }
+};

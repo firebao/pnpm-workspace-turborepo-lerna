@@ -1,0 +1,29 @@
+{
+  /**
+   * @Author      : wwj 318348750@qq.com
+   * @Date        : 2024-03-05 11:01:09
+   * @LastEditors : wwj 318348750@qq.com
+   * @LastTime    : 2025-02-19 11:12:30
+   * @Description : 规范的tsconfig文件,包含所有配置项以及配置项说明，tsc版本适配5.8.3
+   * @link        : Visit https://aka.ms/tsconfig to read more about this file
+   * @Copyright   : Copyright (c) 2024 by sjft email: 318348750@qq.com, All Rights Reserved.
+   */
+
+  /*---- extends 继承 ----*/
+
+  // @Example 继承预设的配置文件，例1：从npm中继承
+  // "extends": "@tsconfig/node16/tsconfig.json",
+  // "extends": "@quasar/app-vite/tsconfig-preset",
+
+  // @Example 指定所要继承的配置文件，例2: 从本地文件中继承
+  "extends": "../../tsconfig.json",
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "skipLibCheck": true
+  }
+}

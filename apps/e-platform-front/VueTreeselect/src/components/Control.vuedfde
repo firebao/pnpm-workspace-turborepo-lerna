@@ -1,0 +1,106 @@
+import { onLeftClick, isPromise } from '../utils';
+import SingleValue from './SingleValue';
+import MultiValue from './MultiValue';
+import DeleteIcon from './icons/Delete';
+import ArrowIcon from './icons/Arrow';
+export default {
+  name: 'vue-treeselect--control',
+  inject: ['instance'],
+  computed: {
+    shouldShowX: function shouldShowX() {
+      var instance = this.instance;
+      return instance.clearable && !instance.disabled && instance.hasValue && (this.hasUndisabledValue || instance.allowClearingDisabled);
+    },
+    shouldShowArrow: function shouldShowArrow() {
+      var instance = this.instance;
+      if (!instance.alwaysOpen) return true;
+      return !instance.menu.isOpen;
+    },
+    hasUndisabledValue: function hasUndisabledValue() {
+      var instance = this.instance;
+      return instance.hasValue && instance.internalValue.some(function (id) {
+        return !instance.getNode(id).isDisabled;
+      });
+    }
+  },
+  methods: {
+    renderX: function renderX() {
+      var h = this.$createElement;
+      var instance = this.instance;
+      var title = instance.multiple ? instance.clearAllText : instance.clearValueText;
+      if (!this.shouldShowX) return null;
+      return h("div", {
+        "class": "vue-treeselect__x-container",
+        attrs: {
+          title: title
+        },
+        on: {
+          "mousedown": this.handleMouseDownOnX
+        }
+      }, [h(DeleteIcon, {
+        "class": "vue-treeselect__x"
+      })]);
+    },
+    renderArrow: function renderArrow() {
+      var h = this.$createElement;
+      var instance = this.instance;
+      var arrowClass = {
+        'vue-treeselect__control-arrow': true,
+        'vue-treeselect__control-arrow--rotated': instance.menu.isOpen
+      };
+      if (!this.shouldShowArrow) return null;
+      return h("div", {
+        "class": "vue-treeselect__control-arrow-container",
+        on: {
+          "mousedown": this.handleMouseDownOnArrow
+        }
+      }, [h(ArrowIcon, {
+        "class": arrowClass
+      })]);
+    },
+    handleMouseDownOnX: onLeftClick(function handleMouseDownOnX(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      var instance = this.instance;
+      var result = instance.beforeClearAll();
+
+      var handler = function handler(shouldClear) {
+        if (shouldClear) instance.clear();
+      };
+
+      if (isPromise(result)) {
+        result.then(handler);
+      } else {
+        setTimeout(function () {
+          return handler(result);
+        }, 0);
+      }
+    }),
+    handleMouseDownOnArrow: onLeftClick(function handleMouseDownOnArrow(evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      var instance = this.instance;
+      instance.focusInput();
+      instance.toggleMenu();
+    }),
+    renderValueContainer: function renderValueContainer(children) {
+      var h = this.$createElement;
+      return h("div", {
+        "class": "vue-treeselect__value-container"
+      }, [children]);
+    }
+  },
+  render: function render() {
+    var h = arguments[0];
+    var instance = this.instance;
+    var ValueContainer = instance.single ? SingleValue : MultiValue;
+    return h("div", {
+      "class": "vue-treeselect__control",
+      on: {
+        "mousedown": instance.handleMouseDown
+      }
+    }, [h(ValueContainer, {
+      ref: "value-container"
+    }), this.renderX(), this.renderArrow()]);
+  }
+};

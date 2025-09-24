@@ -1,0 +1,6 @@
+var render = function () {
+var _obj;
+var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{class:[( _obj = {}, _obj[_vm.classNameActive] = _vm.enabled, _obj[_vm.classNameDragging] = _vm.dragging, _obj[_vm.classNameResizing] = _vm.resizing, _obj[_vm.classNameDraggable] = _vm.draggable, _obj[_vm.classNameResizable] = _vm.resizable, _obj ), _vm.className],style:(_vm.style),on:{"mousedown":_vm.elementMouseDown,"touchstart":_vm.elementTouchDown}},[_vm._l((_vm.actualHandles),function(handle){return _c('div',{key:handle,class:[_vm.classNameHandle, _vm.classNameHandle + '-' + handle],style:({display: _vm.enabled ? 'block' : 'none'}),on:{"mousedown":function($event){$event.stopPropagation();$event.preventDefault();_vm.handleDown(handle, $event)},"touchstart":function($event){$event.stopPropagation();$event.preventDefault();_vm.handleTouchDown(handle, $event)}}},[_vm._t(handle)],2)}),_vm._v(" "),_vm._t("default")],2)}
+var staticRenderFns = []
+
+export { render, staticRenderFns }

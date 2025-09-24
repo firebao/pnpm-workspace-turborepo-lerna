@@ -1,0 +1,277 @@
+import _mergeJSXProps from "babel-helper-vue-jsx-merge-props";
+import { debounce, deepExtend, includes } from '../utils';
+import { MIN_INPUT_WIDTH, KEY_CODES, INPUT_DEBOUNCE_DELAY } from '../constants';
+var keysThatRequireMenuBeingOpen = [KEY_CODES.ENTER, KEY_CODES.END, KEY_CODES.HOME, KEY_CODES.ARROW_LEFT, KEY_CODES.ARROW_UP, KEY_CODES.ARROW_RIGHT, KEY_CODES.ARROW_DOWN];
+export default {
+  name: 'vue-treeselect--input',
+  inject: ['instance'],
+  data: function data() {
+    return {
+      inputWidth: MIN_INPUT_WIDTH,
+      value: ''
+    };
+  },
+  computed: {
+    needAutoSize: function needAutoSize() {
+      var instance = this.instance;
+      return instance.searchable && !instance.disabled && instance.multiple;
+    },
+    inputStyle: function inputStyle() {
+      return {
+        width: this.needAutoSize ? "".concat(this.inputWidth, "px") : null
+      };
+    }
+  },
+  watch: {
+    'instance.trigger.searchQuery': function instanceTriggerSearchQuery(newValue) {
+      this.value = newValue;
+    },
+    value: function value() {
+      if (this.needAutoSize) this.$nextTick(this.updateInputWidth);
+    }
+  },
+  created: function created() {
+    this.debouncedCallback = debounce(this.updateSearchQuery, INPUT_DEBOUNCE_DELAY, {
+      leading: true,
+      trailing: true
+    });
+  },
+  methods: {
+    clear: function clear() {
+      this.onInput({
+        target: {
+          value: ''
+        }
+      });
+    },
+    focus: function focus() {
+      var instance = this.instance;
+
+      if (!instance.disabled) {
+        this.$refs.input && this.$refs.input.focus();
+      }
+    },
+    blur: function blur() {
+      this.$refs.input && this.$refs.input.blur();
+    },
+    onFocus: function onFocus() {
+      var instance = this.instance;
+      instance.trigger.isFocused = true;
+      if (instance.openOnFocus) instance.openMenu();
+    },
+    onBlur: function onBlur() {
+      var instance = this.instance;
+      var menu = instance.getMenu();
+
+      if (menu && document.activeElement === menu) {
+        return this.focus();
+      }
+
+      instance.trigger.isFocused = false;
+      instance.closeMenu();
+    },
+    onInput: function onInput(evt) {
+      var value = evt.target.value;
+      this.value = value;
+
+      if (value) {
+        this.debouncedCallback();
+      } else {
+        this.debouncedCallback.cancel();
+        this.updateSearchQuery();
+      }
+    },
+    onKeyDown: function onKeyDown(evt) {
+      var instance = this.instance;
+      var key = 'which' in evt ? evt.which : evt.keyCode;
+      if (evt.ctrlKey || evt.shiftKey || evt.altKey || evt.metaKey) return;
+
+      if (!instance.menu.isOpen && includes(keysThatRequireMenuBeingOpen, key)) {
+        evt.preventDefault();
+        return instance.openMenu();
+      }
+
+      switch (key) {
+        case KEY_CODES.BACKSPACE:
+          {
+            if (instance.backspaceRemoves && !this.value.length) {
+              instance.removeLastValue();
+            }
+
+            break;
+          }
+
+        case KEY_CODES.ENTER:
+          {
+            evt.preventDefault();
+            if (instance.menu.current === null) return;
+            var current = instance.getNode(instance.menu.current);
+            if (current.isBranch && instance.disableBranchNodes) return;
+            instance.select(current);
+            break;
+          }
+
+        case KEY_CODES.ESCAPE:
+          {
+            if (this.value.length) {
+              this.clear();
+            } else if (instance.menu.isOpen) {
+              instance.closeMenu();
+            }
+
+            break;
+          }
+
+        case KEY_CODES.END:
+          {
+            evt.preventDefault();
+            instance.highlightLastOption();
+            break;
+          }
+
+        case KEY_CODES.HOME:
+          {
+            evt.preventDefault();
+            instance.highlightFirstOption();
+            break;
+          }
+
+        case KEY_CODES.ARROW_LEFT:
+          {
+            var _current = instance.getNode(instance.menu.current);
+
+            if (_current.isBranch && instance.shouldExpand(_current)) {
+              evt.preventDefault();
+              instance.toggleExpanded(_current);
+            } else if (!_current.isRootNode && (_current.isLeaf || _current.isBranch && !instance.shouldExpand(_current))) {
+              evt.preventDefault();
+              instance.setCurrentHighlightedOption(_current.parentNode);
+            }
+
+            break;
+          }
+
+        case KEY_CODES.ARROW_UP:
+          {
+            evt.preventDefault();
+            instance.highlightPrevOption();
+            break;
+          }
+
+        case KEY_CODES.ARROW_RIGHT:
+          {
+            var _current2 = instance.getNode(instance.menu.current);
+
+            if (_current2.isBranch && !instance.shouldExpand(_current2)) {
+              evt.preventDefault();
+              instance.toggleExpanded(_current2);
+            }
+
+            break;
+          }
+
+        case KEY_CODES.ARROW_DOWN:
+          {
+            evt.preventDefault();
+            instance.highlightNextOption();
+            break;
+          }
+
+        case KEY_CODES.DELETE:
+          {
+            if (instance.deleteRemoves && !this.value.length) {
+              instance.removeLastValue();
+            }
+
+            break;
+          }
+
+        default:
+          {
+            instance.openMenu();
+          }
+      }
+    },
+    onMouseDown: function onMouseDown(evt) {
+      if (this.value.length) {
+        evt.stopPropagation();
+      }
+    },
+    renderInputContainer: function renderInputContainer() {
+      var h = this.$createElement;
+      var instance = this.instance;
+      var props = {};
+      var children = [];
+
+      if (instance.searchable && !instance.disabled) {
+        children.push(this.renderInput());
+        if (this.needAutoSize) children.push(this.renderSizer());
+      }
+
+      if (!instance.searchable) {
+        deepExtend(props, {
+          on: {
+            focus: this.onFocus,
+            blur: this.onBlur,
+            keydown: this.onKeyDown
+          },
+          ref: 'input'
+        });
+      }
+
+      if (!instance.searchable && !instance.disabled) {
+        deepExtend(props, {
+          attrs: {
+            tabIndex: instance.tabIndex
+          }
+        });
+      }
+
+      return h("div", _mergeJSXProps([{
+        "class": "vue-treeselect__input-container"
+      }, props]), [children]);
+    },
+    renderInput: function renderInput() {
+      var h = this.$createElement;
+      var instance = this.instance;
+      return h("input", {
+        ref: "input",
+        "class": "vue-treeselect__input",
+        attrs: {
+          type: "text",
+          autocomplete: "off",
+          tabIndex: instance.tabIndex,
+          required: instance.required && !instance.hasValue
+        },
+        domProps: {
+          "value": this.value
+        },
+        style: this.inputStyle,
+        on: {
+          "focus": this.onFocus,
+          "input": this.onInput,
+          "blur": this.onBlur,
+          "keydown": this.onKeyDown,
+          "mousedown": this.onMouseDown
+        }
+      });
+    },
+    renderSizer: function renderSizer() {
+      var h = this.$createElement;
+      return h("div", {
+        ref: "sizer",
+        "class": "vue-treeselect__sizer"
+      }, [this.value]);
+    },
+    updateInputWidth: function updateInputWidth() {
+      this.inputWidth = Math.max(MIN_INPUT_WIDTH, this.$refs.sizer.scrollWidth + 15);
+    },
+    updateSearchQuery: function updateSearchQuery() {
+      var instance = this.instance;
+      instance.trigger.searchQuery = this.value;
+    }
+  },
+  render: function render() {
+    return this.renderInputContainer();
+  }
+};

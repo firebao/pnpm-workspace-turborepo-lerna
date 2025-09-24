@@ -1,0 +1,13 @@
+{
+  "name": "@monorepo/shared-config",
+  "version": "1.0.0",
+  "description": "Shared TypeScript, ESLint and Prettier configuration for the monorepo",
+  "main": "index.js",
+  "scripts": {},
+  "peerDependencies": {},
+  "files": [
+    "tsconfig.json",
+    ".eslintrc.js",
+    ".prettierrc.js"
+  ]
+}

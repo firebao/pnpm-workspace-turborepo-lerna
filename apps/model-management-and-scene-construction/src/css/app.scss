@@ -1,0 +1,22 @@
+// app global css in SCSS form
+@import '@unocss/reset/normalize.css';
+
+// 汉仪菱心体简
+@font-face {
+  font-family: 'HYLingXinTiJ';
+  src: url('./fonts/HYLingXinTiJ.ttf');
+}
+
+.font-hylxt {
+  font-family: 'HYLingXinTiJ';
+}
+
+// 苹方中等体
+@font-face {
+  font-family: 'PingFang1';
+  src: url('./fonts/PingFang-JianZhongHeiTi-2.ttf');
+}
+
+.font-pingfang1 {
+  font-family: 'PingFang1';
+}

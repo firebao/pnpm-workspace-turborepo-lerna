@@ -1,0 +1,2 @@
+echo '进入钩子'
+pnpm dlx commitlint --edit $1

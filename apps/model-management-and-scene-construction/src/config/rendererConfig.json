@@ -1,0 +1,7 @@
+{
+    "precision": "lowp",
+    "antialias": false,
+    "physicallyCorrectLights": true,
+    "pixelRatioFactor": 1,
+    "toneMappingExposure": 0.6
+}

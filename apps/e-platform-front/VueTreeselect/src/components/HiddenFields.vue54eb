@@ -1,0 +1,32 @@
+import { isNaN } from '../utils';
+
+function stringifyValue(value) {
+  if (typeof value === 'string') return value;
+  if (value != null && !isNaN(value)) return JSON.stringify(value);
+  return '';
+}
+
+export default {
+  name: 'vue-treeselect--hidden-fields',
+  inject: ['instance'],
+  functional: true,
+  render: function render(_, context) {
+    var h = arguments[0];
+    var instance = context.injections.instance;
+    if (!instance.name || instance.disabled || !instance.hasValue) return null;
+    var stringifiedValues = instance.internalValue.map(stringifyValue);
+    if (instance.multiple && instance.joinValues) stringifiedValues = [stringifiedValues.join(instance.delimiter)];
+    return stringifiedValues.map(function (stringifiedValue, i) {
+      return h("input", {
+        attrs: {
+          type: "hidden",
+          name: instance.name
+        },
+        domProps: {
+          "value": stringifiedValue
+        },
+        key: 'hidden-field-' + i
+      });
+    });
+  }
+};

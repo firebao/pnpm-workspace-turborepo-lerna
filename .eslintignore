@@ -1,0 +1,4 @@
+# 忽略eslint检查的目录和文件, 因在eslint.config.js中配置了ignorePatterns, 此处可以不配置
+**/dist/**
+**/node_modules/**
+**/eslint.config.js

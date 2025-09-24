@@ -1,0 +1,5 @@
+packages:
+  # 项目文件夹
+  - "apps/*"
+  # 公共组件，工具库
+  - "packages/*"
