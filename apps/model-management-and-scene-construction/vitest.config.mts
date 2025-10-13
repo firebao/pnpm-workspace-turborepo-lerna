@@ -1,3 +1,11 @@
+/*
+ * @Author      : wwj 318348750@qq.com
+ * @Date        : 2025-09-26 17:08:28
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-13 16:19:58
+ * @Description :
+ * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
+ */
 import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
@@ -22,6 +30,8 @@ export default defineConfig({
     quasar({
       sassVariables: 'src/quasar-variables.scss',
     }),
-    tsconfigPaths(),
+    tsconfigPaths({
+      ignoreConfigErrors: true
+    }),
   ],
 });

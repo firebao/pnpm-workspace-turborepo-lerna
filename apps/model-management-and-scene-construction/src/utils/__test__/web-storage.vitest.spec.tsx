@@ -1,13 +1,3 @@
-import {
-  setLocalStorage,
-  getLocalStorage,
-  getAllLocalStorage,
-  removeLocalStorage,
-  setSessionStorage,
-  getSessionStorage,
-  getAllSessionStorage,
-  removeSessionStorage
-} from '../web-storage'
 import { LocalStorage, SessionStorage } from 'quasar'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 
@@ -34,6 +24,7 @@ describe('web-storage utils', () => {
     }))
 
     vi.stubEnv('VITE_VUE_APP_PREFIX', mockPrefix)
+    vi.resetModules()
     window.__APP_VERSION__ = mockVersion
   })
 
@@ -42,7 +33,8 @@ describe('web-storage utils', () => {
   })
 
   describe('LocalStorage', () => {
-    it('should call set with prefixed key', () => {
+    it('should call set with prefixed key', async () => {
+      const { setLocalStorage } = await import('../web-storage')
       setLocalStorage(mockKey, mockValue)
       expect(LocalStorage.set).toHaveBeenCalledWith(
         `${mockPrefix}-${mockVersion}-${mockKey}`,
@@ -50,19 +42,22 @@ describe('web-storage utils', () => {
       )
     })
 
-    it('should call get with prefixed key', () => {
+    it('should call get with prefixed key', async () => {
+      const { getLocalStorage } = await import('../web-storage')
       getLocalStorage(mockKey)
       expect(LocalStorage.getItem).toHaveBeenCalledWith(
         `${mockPrefix}-${mockVersion}-${mockKey}`
       )
     })
 
-    it('should call getAll', () => {
+    it('should call getAll', async () => {
+      const { getAllLocalStorage } = await import('../web-storage')
       getAllLocalStorage()
       expect(LocalStorage.getAll).toHaveBeenCalled()
     })
 
-    it('should call remove with prefixed key', () => {
+    it('should call remove with prefixed key', async () => {
+      const { removeLocalStorage } = await import('../web-storage')
       removeLocalStorage(mockKey)
       expect(LocalStorage.remove).toHaveBeenCalledWith(
         `${mockPrefix}-${mockVersion}-${mockKey}`
@@ -71,7 +66,8 @@ describe('web-storage utils', () => {
   })
 
   describe('SessionStorage', () => {
-    it('should call set with prefixed key', () => {
+    it('should call set with prefixed key', async () => {
+      const { setSessionStorage } = await import('../web-storage')
       setSessionStorage(mockKey, mockValue)
       expect(SessionStorage.set).toHaveBeenCalledWith(
         `${mockPrefix}-${mockVersion}-${mockKey}`,
@@ -79,19 +75,22 @@ describe('web-storage utils', () => {
       )
     })
 
-    it('should call get with prefixed key', () => {
+    it('should call get with prefixed key', async () => {
+      const { getSessionStorage } = await import('../web-storage')
       getSessionStorage(mockKey)
       expect(SessionStorage.getItem).toHaveBeenCalledWith(
         `${mockPrefix}-${mockVersion}-${mockKey}`
       )
     })
 
-    it('should call getAll', () => {
+    it('should call getAll', async () => {
+      const { getAllSessionStorage } = await import('../web-storage')
       getAllSessionStorage()
       expect(SessionStorage.getAll).toHaveBeenCalled()
     })
 
-    it('should call remove with prefixed key', () => {
+    it('should call remove with prefixed key', async () => {
+      const { removeSessionStorage } = await import('../web-storage')
       removeSessionStorage(mockKey)
       expect(SessionStorage.remove).toHaveBeenCalledWith(
         `${mockPrefix}-${mockVersion}-${mockKey}`

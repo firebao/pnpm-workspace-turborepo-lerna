@@ -1,12 +1,18 @@
 /*
  * @Author       : wwj 318348750@qq.com
  * @Date         : 2023-08-16 18:46:34
- * @LastEditors  : wwj 318348750@qq.com
- * @LastEditTime : 2023-10-16 15:37:38
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-13 16:29:33
  * @Description  : 基本类型定义
  *
  * Copyright (c) 2023 by sjft, All Rights Reserved.
  */
+declare global {
+  interface Window {
+    __APP_VERSION__: string
+  }
+}
+
 export type Nullable<T> = T | null
 export type NoDef<T> = T | undefined
 export type NullOrNoDef<T> = T | null | undefined
