@@ -2,7 +2,7 @@
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-06-23 13:49:47
  * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-06-25 12:52:29
+ * @LastEditTime: 2025-09-24 14:51:44
  * @Description : 系统接口
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
  */
@@ -12,13 +12,14 @@ import qs from 'qs'
 import * as webStorage from 'src/utils/web-storage'
 import router from 'src/router'
 import type { ApiModuleParams } from 'src/types/request'
-import type { Response } from './../tools'
+import type { Response } from '../tools'
 import type { UserLoginResponse, UserForMock, MenuForMock } from 'src/types/user'
 
 type ApiModuleReturn = {
   login: (data?: object) => Promise<Response<UserLoginResponse>>
   getUserInfo: () => Promise<Response<unknown>>
   getAccessibleMenus: <T>(data?: object) => Promise<Response<T>>
+  getCaptcha: () => Promise<Response<{ code: string; img: string }>>
 }
 
 const users: Array<UserForMock> = [
@@ -374,6 +375,31 @@ const apiModule: (params: ApiModuleParams) => ApiModuleReturn = ({ request, requ
         url: '/api/menu/accessible',
         method: 'post',
         data
+      })
+    }
+  },
+
+  /**
+   * @description: 获取验证码
+   * @returns Promise<{code: string, img: string}>
+   */
+  getCaptcha() {
+    if (import.meta.env.VITE_MOCK_ENABLED !== 'true') {
+      return request({
+        url: '/auth/code',
+        method: 'get'
+      })
+    } else {
+      mock.onAny('/auth/code').reply(() => {
+        return tools.responseSuccess({
+          code: '1234',
+          img: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9Tta...'
+        })
+      })
+
+      return requestForMock({
+        url: '/api/captcha',
+        method: 'get'
       })
     }
   }

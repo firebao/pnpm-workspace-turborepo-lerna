@@ -2,7 +2,6 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 import { defineConfig } from '#q-app/wrappers'
 import packageJson from './package.json'
-import glsl from 'vite-plugin-glsl'
 // import Unocss from 'unocss/vite'
 // import { presetUno, transformerDirectives } from 'unocss';
 
@@ -16,7 +15,7 @@ export default defineConfig((/* ctx */) => {
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
       'axios',
-      // 'unocss'
+      'i18n'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
@@ -80,6 +79,13 @@ export default defineConfig((/* ctx */) => {
         // 添加 define 配置
         viteConf.define = {
           ...viteConf.define,
+          test: {
+            globals: true,
+            environment: 'jsdom',
+            coverage: {
+              provider: 'v8'
+            }
+          },
           '__APP_VERSION__': JSON.stringify(packageJson.version)
         }
       },

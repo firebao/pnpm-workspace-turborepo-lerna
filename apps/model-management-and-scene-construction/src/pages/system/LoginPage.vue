@@ -2,7 +2,7 @@
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-06-11 11:48:28
  * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-08-13 22:52:41
+ * @LastEditTime: 2025-09-24 14:29:04
  * @Description : 登录页面
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
 -->
@@ -80,6 +80,11 @@ onMounted(() => {
   } else {
     console.error('没有canvas容器用于ThreeJs渲染')
   }
+  getCode().then(() => {
+    console.log('验证码获取成功')
+  }).catch(e => {
+    console.error('验证码获取失败', e)
+  })
 })
 
 const form = ref({
@@ -123,6 +128,17 @@ const onSubmit = () => {
 const onReset = () => {
   form.value = { username: '', password: '' }
 }
+
+const getCode = async () => {
+  const res = await getCodeImg()
+  const { data } = res
+  captchaImg.value = data.captchaEnabled === undefined ? true : data.img
+  if (captchaEnabled.value) {
+    codeUrl.value = 'data:image/gif;base64,' + data.img;
+    loginForm.value.uuid = data.uuid;
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>

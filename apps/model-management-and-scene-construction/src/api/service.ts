@@ -2,7 +2,7 @@
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-06-23 13:49:47
  * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-06-25 11:24:36
+ * @LastEditTime: 2025-09-26 15:36:20
  * @Description : axios封装
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
  */
@@ -19,13 +19,68 @@ import router from 'src/router'
  * @returns {AxiosInstance}
  */
 const createService = (): AxiosInstance => {
-  const service = axios.create({})
+  const service = axios.create({
+    baseURL: import.meta.env.VITE_APP_BASE_API,
+    timeout: 10000
+  })
 
   /**
    * Axios 请求拦截器
    */
   service.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => config,
+    (config: InternalAxiosRequestConfig) => {
+      // TODO: 国际化处理
+      // config.headers['Content-Language'] = 'zh-CN'
+
+      // 判断请求是否需要添加 token, true：需要 false：不需要
+      const isToken = config.headers?.['isToken'] === true
+
+      // 是否需要防止数据重复提交, true：需要 false：不需要
+      const isRepeatSubmit = config.headers?.repeatSubmit === true
+
+      // 是否需要加密
+      const isEncrypt = config.headers?.isEncrypt === true
+
+      if (getToken() && isToken) {
+        config.headers['Authorization'] = 'Bearer ' + getToken()
+      }
+
+      // GET请求进行params参数的处理
+      if (config.method === 'get' && config.params) {
+        let url = config.url + '?' + transformParams(config.params)
+        url = url.slice(0, -1)
+        config.params = {}
+        config.url = url
+      }
+
+      // 防止数据重复提交
+      if (isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
+        const requestObj = {
+          url: config.url,
+          data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
+          time: new Date().getTime()
+        }
+        const sessionObj = cache.session.getJSON('sessionObj') || {}
+        if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
+          cache.session.setJSON('sessionObj', requestObj)
+        } else {
+          const sUrl = sessionObj.url
+          const sData = sessionObj.data
+          const sTime = sessionObj.time
+          // 防止重复提交的间隔时间，单位ms
+          const interval = 500
+          if (sData === requestObj.data && requestObj.time < interval) {
+            const message = `[${sUrl}]:数据重复提交，请稍后再试`
+            errorCreate(message)
+            return Promise.reject(new Error(message))
+          } else {
+            cache.session.setJSON('sessionObj', requestObj)
+          }
+        }
+      }
+
+      return config
+    },
     (error: AxiosError) => {
       errorLog(error)
       return Promise.reject(error)
