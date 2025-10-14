@@ -34,7 +34,7 @@ export function setSessionStorage(key = 'default', value = ''): void {
  * @param {string} key 键
  * @return {string}
  */
-export function getLocalStorage(key = 'default'): string {
+export function getLocalStorage(key = 'default'): string | null {
   return LocalStorage.getItem(`${webStoragePrefix}-${__APP_VERSION__}-${key}`) ?? ''
 }
 

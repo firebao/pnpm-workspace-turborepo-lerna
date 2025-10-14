@@ -1,8 +1,8 @@
 /*
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-06-23 13:35:45
- * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-06-25 11:56:06
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-14 09:01:01
  * @Description : 工具函数库
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
  */
@@ -250,7 +250,7 @@ export const fetchToday = () => {
 /**
  * @description 获取当前日期的前三天和后三天
  * @param {Date} now 日期
- * @returns 
+ * @returns
  */
 interface ThreeDaysResult extends Array<string> {
   prev: string[]
@@ -322,6 +322,7 @@ export const fetchPrevMonthRange = (date = new Date()) => {
 export const fetchTodayMonthRange = (date = new Date()) => {
   return fetchThreeDays(date).current
 }
+
 /**
  * 日期时间格式化
  * @param {(Date|string|number)} time 时间(可以是Date对象，构造Date对象的字符串，或者时间戳)
@@ -377,4 +378,31 @@ export function parseTime(time: Date | string | number, cFormat: string): string
     return value.toString().padStart(2, '0')
   })
   return timeStr
+}
+
+/**
+ * GET请求参数处理(深层嵌套对象，空值过滤、强制编码方式)
+ * @param {object} params  参数
+ * @returns {string}
+ */
+export const transformParams = (params: object) => {
+  let result = ''
+  for (const propName of Object.keys(params)) {
+    const value = params[propName as keyof typeof params]
+    const part = encodeURIComponent(propName) + '='
+    if (value !== null && value !== '' && typeof value !== 'undefined') {
+      if (typeof value === 'object') {
+        for (const key of Object.keys(value)) {
+          if (value[key] !== null && value[key] !== '' && typeof value[key] !== 'undefined') {
+            const params = propName + '[' + key + ']'
+            const subPart = encodeURIComponent(params) + '='
+            result += subPart + encodeURIComponent(value[key]) + '&'
+          }
+        }
+      } else {
+        result += part + encodeURIComponent(value) + '&'
+      }
+    }
+  }
+  return result.length > 0 ? result.slice(0, -1) : ''
 }
