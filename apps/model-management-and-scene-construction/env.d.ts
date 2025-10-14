@@ -1,8 +1,8 @@
 /*
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-06-23 11:48:23
- * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-09-25 10:13:07
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-14 13:54:53
  * @Description : 环境变量类型
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
  */
@@ -29,6 +29,9 @@ interface ImportMeta {
     VITE_VUE_APP_TITLE: string
     VITE_APP_BASE_API: string
     VITE_APP_CLIENT_ID: string
+    VITE_APP_ENCRYPT: boolean
+    VITE_APP_RSA_PUBLIC_KEY: string
+    VITE_APP_RSA_PRIVATE_KEY: string
   }
 }
 
