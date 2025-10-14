@@ -43,7 +43,7 @@ export function getLocalStorage(key = 'default'): string | null {
  * @param {string} key 键
  * @return {string}
  */
-export function getSessionStorage(key = 'default'): string {
+export function getSessionStorage(key = 'default'): string | null {
   return SessionStorage.getItem(`${webStoragePrefix}-${__APP_VERSION__}-${key}`) ?? ''
 }
 
