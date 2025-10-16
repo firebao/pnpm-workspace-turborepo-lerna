@@ -1,9 +1,9 @@
 /*
  * @Author       : wwj 318348750@qq.com
  * @Date         : 2023-08-14 18:25:20
- * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-06-24 17:33:46
- * @Description  :
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-15 10:42:37
+ * @Description  : 日志模块
  *
  * Copyright (c) 2023 by sjft, All Rights Reserved.
  */
