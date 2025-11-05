@@ -2,25 +2,24 @@
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-10-15 10:32:40
  * @LastEditors : 舍海洋 318348750@qq.com
- * @LastEditTime: 2025-11-05 11:42:30
+ * @LastEditTime: 2025-11-05 17:29:03
  * @Description :
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
  */
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { parse, response, responseSuccess, responseError, errorLog, errorCreate } from '../tools'
-import { Notify } from 'quasar'
-import { store } from 'src/stores/index'
-
-const mockVersion = '1.0.0'
 
 // Mock外部依赖
 vi.mock('quasar')
 vi.mock('src/stores/index')
 
+import { parse, response, responseSuccess, responseError, errorLog, errorCreate } from '../tools'
+import { Notify } from 'quasar'
+import { store } from 'src/stores/index'
+
 describe('API Tools', () => {
   beforeEach(() => {
-    vi.resetAllMocks()
-    window.__APP_VERSION__ = mockVersion
+    vi.clearAllMocks()
+    vi.resetModules()
   })
 
   describe('parse函数', () => {
