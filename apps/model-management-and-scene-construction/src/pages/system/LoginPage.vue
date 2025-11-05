@@ -1,8 +1,8 @@
 <!--
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-06-11 11:48:28
- * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-09-24 14:29:04
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-11-05 16:26:40
  * @Description : 登录页面
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
 -->
@@ -16,7 +16,16 @@
         @submit="onSubmit"
         @reset="onReset"
       >
-        <div class="text-h5 text-teal-10 text-weight-bold text-center q-my-md full-width font-pingfang1 login-title">
+        <div class="
+          text-h5
+          text-teal-10
+          text-weight-bold
+          text-center
+          q-my-md
+          full-width
+          font-pingfang1
+          login-title
+        ">
           孪生场景管理平台登录
         </div>
 
@@ -51,6 +60,33 @@
           </template>
         </q-input>
 
+        <div class="row">
+          <div class="col-6">
+            <q-input
+              v-model="form.captcha"
+              outlined
+              color="teal-10"
+              label-color="teal-10"
+              label="验证码"
+              lazy-rules
+              type="password"
+              class="q-mb-md"
+              :rules="rules.captcha"
+            >
+              <template #prepend>
+                <q-icon class="icon" name="lock" color="teal-10" />
+              </template>
+            </q-input>
+          </div>
+
+          <div class="col-6 text-right" @click="getCode">
+            <img class="captchaImg" :src="codeUrl" alt="图片验证码">
+            <div class="refresh">看不清？换一张</div>
+          </div>
+
+        </div>
+
+
         <div class="q-pb-lg">
           <q-btn
             class="btn-submit full-width no-outline text-h6"
@@ -65,14 +101,19 @@
 </template>
 
 <script lang="ts" setup>
+import type { ThemeConfig } from 'src/types/theme'
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { store } from 'src/stores/index'
+import { system } from 'src/api'
 import initThreeScene from 'src/common/three/init'
-import type { ThemeConfig } from 'src/types/theme'
+
 
 const $router = useRouter()
 const canvasRef = ref<HTMLCanvasElement | null>(null)
+const captchaImg = ref()
+const captchaEnabled = ref(false)
+const codeUrl = ref()
 
 onMounted(() => {
   if (canvasRef.value) {
@@ -89,7 +130,9 @@ onMounted(() => {
 
 const form = ref({
   username: '',
-  password: ''
+  password: '',
+  uuid: '',
+  captcha: ''
 })
 
 const rules = {
@@ -99,6 +142,9 @@ const rules = {
   password: [
     (val: string) => (val && val.length > 0) || '请输入密码'
   ],
+  captcha: [
+    (val: string) => (val && val.length > 0) || '请输入验证码'
+  ]
 }
 
 const theme = computed<ThemeConfig>(() => {
@@ -126,16 +172,18 @@ const onSubmit = () => {
 }
 
 const onReset = () => {
-  form.value = { username: '', password: '' }
+  form.value = { username: '', password: '', uuid: '', captcha: '' }
 }
 
 const getCode = async () => {
-  const res = await getCodeImg()
+  debugger
+  const res = await system.getCaptcha()
   const { data } = res
   captchaImg.value = data.captchaEnabled === undefined ? true : data.img
+  captchaEnabled.value = data.captchaEnabled === undefined ? false : true
   if (captchaEnabled.value) {
-    codeUrl.value = 'data:image/gif;base64,' + data.img;
-    loginForm.value.uuid = data.uuid;
+    codeUrl.value = data.img;
+    form.value.uuid = data.uuid;
   }
 }
 
@@ -182,6 +230,17 @@ const getCode = async () => {
       &::before {
         border-color: rgba(0, 0, 0, 0.24);
       }
+    }
+    .captchaImg {
+      border: 1px solid rgba(0, 0, 0, 0.24);
+      border-radius: 5px;
+      width: 180px;
+      height: 36px;
+      cursor: pointer;
+    }
+    .refresh {
+      color: $blue-8;
+      cursor: pointer;
     }
   }
 

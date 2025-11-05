@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^13.9.0",
+    "jsencrypt": "^3.5.4",
     "vue-i18n": "9.2.2"
   }
 }

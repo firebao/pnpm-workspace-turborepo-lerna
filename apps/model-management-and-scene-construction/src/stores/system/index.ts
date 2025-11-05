@@ -1,15 +1,15 @@
 /*
  * @Author       : wwj 318348750@qq.com
  * @Date         : 2023-08-14 18:25:20
- * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-06-24 16:50:51
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-15 17:30:19
  * @Description  : Store.system
  *
  * Copyright (c) 2023 by sjft, All Rights Reserved.
  */
 import type { Pinia } from 'pinia'
 import { useAccountStore } from './account'
-import { useDBStore } from './db'
+// import { useDBStore } from './db'
 import { useFullscreenStore } from './fullscreen'
 import { useGrayStore } from './gray'
 import { useLayoutStore } from './layout'
@@ -24,7 +24,7 @@ import { useUserStore } from './user'
 
 export const systemStore = {
   useAccountStore: (pinia?: Pinia) => useAccountStore(pinia),
-  useDBStore: (pinia?: Pinia) => useDBStore(pinia),
+  // useDBStore: (pinia?: Pinia) => useDBStore(pinia),
   useFullscreenStore: (pinia?: Pinia) => useFullscreenStore(pinia),
   useGrayStore: (pinia?: Pinia) => useGrayStore(pinia),
   useLayoutStore: (pinia?: Pinia) => useLayoutStore(pinia),

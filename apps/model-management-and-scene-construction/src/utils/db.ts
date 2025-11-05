@@ -1,12 +1,11 @@
 /*
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-06-23 13:35:45
- * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-06-24 16:23:37
- * @Description : 
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-16 11:47:02
+ * @Description :
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
  */
-
 import { LowSync } from 'lowdb'
 import { LocalStorage } from 'lowdb/browser'
 import * as webStorage from './web-storage'
@@ -67,7 +66,7 @@ export function pathInit({
 }) {
   const uuid = webStorage.getLocalStorage('uuid') || 'ghost-uuid'
   const currentPath = `${dbName}.${user ? `user.${uuid}` : 'public'}${path ? `.${path}` : ''}`
-  const value = db.get(currentPath) 
+  const value = db.get(currentPath)
   if (!(value !== undefined && validator(value))) {
     db.set(currentPath, defaultValue).write()
   }

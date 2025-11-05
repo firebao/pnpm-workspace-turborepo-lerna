@@ -1,0 +1,73 @@
+/*
+ * @Author      : wwj 318348750@qq.com
+ * @Date        : 2025-10-15 10:04:16
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-15 10:27:22
+ * @Description :
+ * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
+ */
+import axios from 'axios'
+import { vi, describe, it, expect, beforeEach } from 'vitest'
+import { service, request } from '../service'
+import { getToken } from 'src/utils/auth'
+
+const mockVersion = '1.0.0'
+
+// Mock axios和外部依赖
+vi.mock('axios')
+vi.mock('src/utils/auth')
+
+describe('Axios Service', () => {
+  beforeEach(() => {
+    vi.resetAllMocks()
+    window.__APP_VERSION__ = mockVersion
+  })
+
+  it('应该正确创建service实例', () => {
+    expect(service).toBeDefined()
+    expect(service.defaults.baseURL).toBe(import.meta.env.VITE_APP_BASE_API)
+    expect(service.defaults.timeout).toBe(10000)
+  })
+
+  it('请求拦截器应添加Authorization头', async () => {
+    const mockToken = 'test-token'
+    vi.mocked(getToken).mockReturnValue(mockToken)
+
+    const config = {
+      url: '/test',
+      method: 'get',
+      headers: { isToken: true }
+    }
+
+    // 模拟axios请求拦截器
+    const requestInterceptor = service.interceptors.request.handlers[0]
+    const modifiedConfig = await requestInterceptor.fulfilled(config)
+
+    expect(modifiedConfig.headers.Authorization).toBe(`Bearer ${mockToken}`)
+  })
+
+  it('响应拦截器应处理401错误', async () => {
+    const error = {
+      response: {
+        status: 401,
+        config: { url: '/test' }
+      }
+    }
+
+    // 模拟axios响应拦截器
+    const responseInterceptor = service.interceptors.response.handlers[0]
+    try {
+      await responseInterceptor.rejected(error)
+    } catch (e) {
+      expect(e.message).toBe('未授权，请登录')
+    }
+  })
+
+  it('request函数应合并配置', async () => {
+    const mockResponse = { data: 'test' }
+    vi.mocked(axios.request).mockResolvedValue(mockResponse)
+
+    const result = await request({ url: '/test' })
+    expect(result).toEqual(mockResponse.data)
+  })
+})

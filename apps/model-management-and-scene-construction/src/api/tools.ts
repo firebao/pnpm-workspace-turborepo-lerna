@@ -1,8 +1,8 @@
 /*
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-06-23 13:49:47
- * @LastEditors : wwj 318348750@qq.com
- * @LastEditTime: 2025-06-25 11:29:43
+ * @LastEditors : 舍海洋 318348750@qq.com
+ * @LastEditTime: 2025-10-15 10:33:36
  * @Description : API 工具模块
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
  */
@@ -18,7 +18,7 @@ export interface Response<T> {
 }
 
 /**
- * @description 安全地解析 json 字符串
+ * @description 安全地解析JSON字符串
  * @template T
  * @param {String} jsonString 需要解析的 json 字符串
  * @param {Object} defaultValue 默认值
