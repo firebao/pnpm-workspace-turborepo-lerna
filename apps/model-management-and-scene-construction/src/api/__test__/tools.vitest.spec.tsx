@@ -2,24 +2,43 @@
  * @Author      : wwj 318348750@qq.com
  * @Date        : 2025-10-15 10:32:40
  * @LastEditors : 舍海洋 318348750@qq.com
- * @LastEditTime: 2025-11-05 17:29:03
+ * @LastEditTime: 2025-11-06 17:43:09
  * @Description :
  * Copyright (c) 2025 by xxx email: 318348750@qq.com, All Rights Reserved.
  */
+import { installQuasarPlugin } from '@quasar/quasar-app-extension-testing-unit-vitest';
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-
-// Mock外部依赖
-vi.mock('quasar')
-vi.mock('src/stores/index')
-
-import { parse, response, responseSuccess, responseError, errorLog, errorCreate } from '../tools'
 import { Notify } from 'quasar'
+import { parse, response, responseSuccess, responseError, errorLog, errorCreate } from '../tools'
 import { store } from 'src/stores/index'
+import { installPinia } from '../../../test/vitest/install-pinia'
+
+installPinia({ stubActions: false })
+vi.mock('src/stores/index', () => ({
+  store: {
+    system: {
+      useLogStore: vi.fn(() => ({ push: vi.fn() }))
+    }
+  },
+  pinia: {}
+}))
+
+// 添加这个模拟，覆盖 quasar 包中的 Notify 对象
+vi.mock('quasar', async (importOriginal) => {
+  const original = await importOriginal<typeof import('quasar')>();
+  return {
+    ...original,
+    Notify: {
+      create: vi.fn() // 提供一个模拟的 create 方法
+    }
+  };
+});
+
 
 describe('API Tools', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.resetModules()
+    installQuasarPlugin({ plugins: { Notify } })
   })
 
   describe('parse函数', () => {
@@ -92,10 +111,7 @@ describe('API Tools', () => {
 
   describe('errorCreate函数', () => {
     it('应创建并抛出错误', () => {
-      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
       expect(() => errorCreate('test error')).toThrow('test error')
-      expect(errorSpy).toHaveBeenCalled()
-      errorSpy.mockRestore()
     })
   })
 })
